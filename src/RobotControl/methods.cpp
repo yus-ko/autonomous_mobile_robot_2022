@@ -59,35 +59,35 @@ void RobotControlClass::pid_control()
     cmd.linear.x = cmd.linear.y = cmd.linear.z = 0.0;
     cmd.angular.x = cmd.angular.y = cmd.angular.z = 0.0;
 
-    cmd.linear.x = MAX_VELOCITY;
-	if (ANGLE_CORRECTION)
+    // cmd.linear.x = MAX_VELOCITY;
+	// if (ANGLE_CORRECTION)
+    // {
+    //     cmd.angular.z = -odom.pose.pose.orientation.z;
+    // }
+
+    if (!done_turn)
     {
-        cmd.angular.z = -odom.pose.pose.orientation.z;
+        //角速度
+        double error_angvel = MAX_ANGULAR_VELOCITY - encoder_value.angular.z;
+        integral_angvel_error += error_angvel * encoder_deltatime;  //台形近似にするかも
+
+        cmd.angular.z = (GAIN_PROPORTIONAL * error_angvel) + (GAIN_INTEGRAL * integral_angvel_error) + (GAIN_DIFFERENTIAL * (error_angvel - error_angvel_pre) / encoder_deltatime);
+
+        error_angvel_pre = error_angvel;
+        return;
     }
 
-    // if (!done_turn)
-    // {
-    //     //角速度
-    //     double error_angvel = MAX_ANGULAR_VELOCITY - encoder_value.angular.z;
-    //     integral_angvel_error += error_angvel * encoder_deltatime;  //台形近似にするかも
+    if (!done_straight)
+    {
+        //速度
+        double error_vel = MAX_VELOCITY - encoder_value.linear.x;
+        integral_vel_error += error_vel * encoder_deltatime;  //台形近似にするかも
 
-    //     cmd.angular.z = (GAIN_PROPORTIONAL * error_angvel) + (GAIN_INTEGRAL * integral_angvel_error) + (GAIN_DIFFERENTIAL * (error_angvel - error_angvel_pre) / encoder_deltatime);
+        cmd.linear.x = (GAIN_PROPORTIONAL * error_vel) + (GAIN_INTEGRAL * integral_vel_error) + (GAIN_DIFFERENTIAL * (error_vel - error_vel_pre) / encoder_deltatime);
 
-    //     error_angvel_pre = error_angvel;
-    //     return;
-    // }
+        error_vel_pre = error_vel;
 
-    // if (!done_straight)
-    // {
-    //     //速度
-    //     double error_vel = MAX_VELOCITY - encoder_value.linear.x;
-    //     integral_vel_error += error_vel * encoder_deltatime;  //台形近似にするかも
-
-    //     cmd.linear.x = (GAIN_PROPORTIONAL * error_vel) + (GAIN_INTEGRAL * integral_vel_error) + (GAIN_DIFFERENTIAL * (error_vel - error_vel_pre) / encoder_deltatime);
-
-    //     error_vel_pre = error_vel;
-
-    // }
+    }
     
 
 }
