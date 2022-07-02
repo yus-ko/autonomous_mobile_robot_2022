@@ -60,7 +60,10 @@ void RobotControlClass::pid_control()
     cmd.angular.x = cmd.angular.y = cmd.angular.z = 0.0;
 
     cmd.linear.x = MAX_VELOCITY;
-	cmd.angular.x = -odom.pose.pose.orientation.z;
+	if (ANGLE_CORRECTION)
+    {
+        cmd.angular.z = -odom.pose.pose.orientation.z;
+    }
 
     // if (!done_turn)
     // {

@@ -24,7 +24,7 @@ class RobotControlClass{
         double encoder_deltatime, error_pos_x_pre = 0, error_pos_y_pre = 0, error_vel_pre = 0, error_angvel_pre = 0, integral_vel_error = 0, integral_angvel_error = 0;
 
 
-        bool IS_SIMULATOR, PUBLISH_COMMAND;
+        bool IS_SIMULATOR, PUBLISH_COMMAND, ANGLE_CORRECTION;
         double MAX_VELOCITY, MAX_ANGULAR_VELOCITY, TARGET_POSITION_X, TARGET_POSITION_Y;
         double GAIN_PROPORTIONAL, GAIN_INTEGRAL, GAIN_DIFFERENTIAL;
 

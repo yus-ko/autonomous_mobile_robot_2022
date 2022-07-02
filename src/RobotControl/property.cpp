@@ -5,6 +5,7 @@ void RobotControlClass::setLaunchParam(){
     ros::NodeHandle n("~");
     n.getParam("IS_SIMULATOR",IS_SIMULATOR);
     n.getParam("PUBLISH_COMMAND",PUBLISH_COMMAND);
+    n.getParam("PUBLISH_COMMAND",ANGLE_CORRECTION);
     n.getParam("MAX_VELOCITY",MAX_VELOCITY);
     n.getParam("MAX_ANGULAR_VELOCITY",MAX_ANGULAR_VELOCITY);
     n.getParam("TARGET_POSITION_X",TARGET_POSITION_X);
