@@ -1,0 +1,17 @@
+<launch>
+  <!-- <arg name="robot_name"        default="robot2"/> //-->
+  <arg name="distance_to_object" default="1.0"/>
+  <!-- <group ns="$(arg robot_name)"> -->
+ <!-- <node pkg="autonomous_mobile_robot" name="autonomous_mobile_robot_syncro" type="autonomous_mobile_robot_syncro" output="screen"/> -->
+ <node pkg="autonomous_mobile_robot_2022" name="autonomous_mobile_robot_2022_pc" type="autonomous_mobile_robot_2022_pc" output="screen">
+  <param name="DISTANCE_TO_OBJECT" value="1.0"/>
+  <param name="ANGLE_TO_OBJECT" value="0.0"/> <!-- deg -->
+  <param name="ROBOT_VELOCITY" value="0.01"/>
+  <param name="OBJECTSIZE_HEIGHT" value="0.4"/>
+  <param name="OBJECTSIZE_WIDTH" value="0.2"/>
+  <param name="OBJECTSIZE_DEPTH" value="0.2"/>
+  <param name="CAMERAPOS_HEIGHT" value="0.507"/>
+  <!-- <param name="distance_to_object" value="$(arg distance_to_object)"/> -->
+ </node>
+  <!-- </group> -->
+</launch>
