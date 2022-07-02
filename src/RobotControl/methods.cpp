@@ -46,30 +46,46 @@ void RobotControlClass::odometry()
 
 		encoder_time_pre = encoder_time_now;
     }
+
+    if (!done_turn && abs(odom.pose.pose.orientation.z) >= atan(TARGET_POSITION_Y / TARGET_POSITION_X)*0.99 && abs(odom.pose.pose.orientation.z) <= atan(TARGET_POSITION_Y / TARGET_POSITION_X)*1.01) done_turn = true;
+    if (!done_straight && sqrt(odom.pose.pose.position.x * odom.pose.pose.position.x + odom.pose.pose.position.y * odom.pose.pose.position.y) > sqrt(TARGET_POSITION_X * TARGET_POSITION_X + TARGET_POSITION_Y * TARGET_POSITION_Y)) done_straight = true;
+
 }
 
 
 void RobotControlClass::pid_control()
 {
 
-    cmd.linear.y = cmd.linear.z = 0.0;
-    cmd.angular.x = cmd.angular.y = 0.0;
+    cmd.linear.x = cmd.linear.y = cmd.linear.z = 0.0;
+    cmd.angular.x = cmd.angular.y = cmd.angular.z = 0.0;
 
-    //速度
-    double error_vel = MAX_VELOCITY - encoder_value.linear.x;
-    integral_vel_error += error_vel * encoder_deltatime;  //台形近似にするかも
+    std::cout<< done_turn <<std::endl;
+    std::cout<< done_straight <<std::endl;
 
-    cmd.linear.x = (GAIN_PROPORTIONAL * error_vel) + (GAIN_INTEGRAL * integral_vel_error) + (GAIN_DIFFERENTIAL * (error_vel - error_vel_pre) / encoder_deltatime);
+    if (!done_turn)
+    {
+        //角速度
+        double error_angvel = MAX_ANGULAR_VELOCITY - encoder_value.angular.z;
+        integral_angvel_error += error_angvel * encoder_deltatime;  //台形近似にするかも
 
-    error_vel_pre = error_vel;
+        cmd.angular.z = (GAIN_PROPORTIONAL * error_angvel) + (GAIN_INTEGRAL * integral_angvel_error) + (GAIN_DIFFERENTIAL * (error_angvel - error_angvel_pre) / encoder_deltatime);
 
-    //角速度
-    double error_angvel = MAX_ANGULAR_VELOCITY - encoder_value.angular.z;
-    integral_angvel_error += error_angvel * encoder_deltatime;  //台形近似にするかも
+        error_angvel_pre = error_angvel;
+        return;
+    }
 
-    cmd.angular.z = (GAIN_PROPORTIONAL * error_angvel) + (GAIN_INTEGRAL * integral_angvel_error) + (GAIN_DIFFERENTIAL * (error_angvel - error_angvel_pre) / encoder_deltatime);
+    if (!done_straight)
+    {
+        //速度
+        double error_vel = MAX_VELOCITY - encoder_value.linear.x;
+        integral_vel_error += error_vel * encoder_deltatime;  //台形近似にするかも
 
-    error_angvel_pre = error_angvel;
+        cmd.linear.x = (GAIN_PROPORTIONAL * error_vel) + (GAIN_INTEGRAL * integral_vel_error) + (GAIN_DIFFERENTIAL * (error_vel - error_vel_pre) / encoder_deltatime);
+
+        error_vel_pre = error_vel;
+
+    }
+    
 
 }
 

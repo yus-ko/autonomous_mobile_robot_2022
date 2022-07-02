@@ -19,6 +19,8 @@ class RobotControlClass{
         nav_msgs::Odometry odom;
         bool encoder_firsttime = true;
 
+        bool done_turn = false, done_straight = false;
+
         double encoder_deltatime, error_pos_x_pre = 0, error_pos_y_pre = 0, error_vel_pre = 0, error_angvel_pre = 0, integral_vel_error = 0, integral_angvel_error = 0;
 
 
