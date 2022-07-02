@@ -1,8 +1,8 @@
 <launch>
  <node pkg="autonomous_mobile_robot_2022" name="autonomous_mobile_robot_2022_rc" type="autonomous_mobile_robot_2022_rc" output="screen">
-  <param name="IS_SIMULATOR" value="true"/>
+  <param name="IS_SIMULATOR" value="false"/>
   <param name="PUBLISH_COMMAND" value="true"/>
-  <param name="MAX_VELOCITY" value="1.0"/>
+  <param name="MAX_VELOCITY" value="0.5"/>
   <param name="MAX_ANGULAR_VELOCITY" value="3.14"/>
   <param name="TARGET_POSITION_X" value="5.0"/>
   <param name="TARGET_POSITION_Y" value="0.0"/>
