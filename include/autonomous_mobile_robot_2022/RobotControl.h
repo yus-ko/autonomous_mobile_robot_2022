@@ -21,11 +21,11 @@ class RobotControlClass{
 
         bool done_turn = false, done_straight = false;
 
-        double encoder_deltatime, error_pos_x_pre = 0, error_pos_y_pre = 0, error_vel_pre = 0, error_angvel_pre = 0, integral_vel_error = 0, integral_angvel_error = 0;
+        double encoder_deltatime, error_pos_x_pre = 0, error_pos_y_pre = 0, error_vel_pre = 0, error_angular_pre = 0, integral_vel_error = 0, integral_angular_error = 0;
 
 
         bool IS_SIMULATOR, PUBLISH_COMMAND, ANGLE_CORRECTION, PID_CONTROL;
-        double MAX_VELOCITY, MAX_ANGULAR_VELOCITY, TARGET_POSITION_X, TARGET_POSITION_Y;
+        double MAX_VELOCITY, MAX_ANGULAR, TARGET_POSITION_X, TARGET_POSITION_Y;
         double GAIN_PROPORTIONAL, GAIN_INTEGRAL, GAIN_DIFFERENTIAL;
 
     public:

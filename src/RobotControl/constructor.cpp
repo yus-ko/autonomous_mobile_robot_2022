@@ -15,6 +15,8 @@ RobotControlClass::RobotControlClass()
 		sub_encoder=nhSub.subscribe("/rover_odo",1,&RobotControlClass::encoder_callback,this);
 		pub_cmd= nhPub.advertise<geometry_msgs::Twist>("/rover_twist", 1);
 	}
+
+	//pub_odom= nhPub.advertise<geometry_msgs::Twist>("/autonomous_mobile_robot_2022/odom", 1);
 	
 }
 RobotControlClass::~RobotControlClass(){

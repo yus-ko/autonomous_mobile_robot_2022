@@ -8,7 +8,7 @@ void RobotControlClass::setLaunchParam(){
     n.getParam("PID_CONTROL",PID_CONTROL);
     n.getParam("ANGLE_CORRECTION",ANGLE_CORRECTION);
     n.getParam("MAX_VELOCITY",MAX_VELOCITY);
-    n.getParam("MAX_ANGULAR_VELOCITY",MAX_ANGULAR_VELOCITY);
+    n.getParam("MAX_ANGULAR",MAX_ANGULAR);
     n.getParam("TARGET_POSITION_X",TARGET_POSITION_X);
     n.getParam("TARGET_POSITION_Y",TARGET_POSITION_Y);
     n.getParam("GAIN_PROPORTIONAL",GAIN_PROPORTIONAL);

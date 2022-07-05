@@ -47,9 +47,10 @@ void RobotControlClass::odometry()
 		encoder_time_pre = encoder_time_now;
     }
 
-    if (!done_turn && abs(odom.pose.pose.orientation.z) >= atan(TARGET_POSITION_Y / TARGET_POSITION_X)*0.99 && abs(odom.pose.pose.orientation.z) <= atan(TARGET_POSITION_Y / TARGET_POSITION_X)*1.01) done_turn = true;
+    //std::cout<< atan(TARGET_POSITION_Y / TARGET_POSITION_X) <<std::endl;
+    if (!done_turn && abs(odom.pose.pose.orientation.z) >= atan(TARGET_POSITION_Y / TARGET_POSITION_X)) done_turn = true;
     if (!done_straight && sqrt(odom.pose.pose.position.x * odom.pose.pose.position.x + odom.pose.pose.position.y * odom.pose.pose.position.y) > sqrt(TARGET_POSITION_X * TARGET_POSITION_X + TARGET_POSITION_Y * TARGET_POSITION_Y)) done_straight = true;
-
+    
 }
 
 
@@ -59,23 +60,17 @@ void RobotControlClass::pid_control()
     cmd.linear.x = cmd.linear.y = cmd.linear.z = 0.0;
     cmd.angular.x = cmd.angular.y = cmd.angular.z = 0.0;
 
-    cmd.linear.x = MAX_VELOCITY;
-	if (ANGLE_CORRECTION)
-    {
-        cmd.angular.z = -odom.pose.pose.orientation.z;
-    }
-
     if (PID_CONTROL)
     {
         if (!done_turn)
         {
             //角速度
-            double error_angvel = MAX_ANGULAR_VELOCITY - encoder_value.angular.z;
-            integral_angvel_error += error_angvel * encoder_deltatime;  //台形近似にするかも
+            double error_angular = MAX_ANGULAR - encoder_value.angular.z;
+            integral_angular_error += error_angular * encoder_deltatime;  //台形近似にするかも
 
-            cmd.angular.z = (GAIN_PROPORTIONAL * error_angvel) + (GAIN_INTEGRAL * integral_angvel_error) + (GAIN_DIFFERENTIAL * (error_angvel - error_angvel_pre) / encoder_deltatime);
+            cmd.angular.z = (GAIN_PROPORTIONAL * error_angular) + (GAIN_INTEGRAL * integral_angular_error) + (0.00001 * (error_angular - error_angular_pre) / encoder_deltatime);
 
-            error_angvel_pre = error_angvel;
+            error_angular_pre = error_angular;
             return;
         }
 
@@ -88,6 +83,11 @@ void RobotControlClass::pid_control()
             cmd.linear.x = (GAIN_PROPORTIONAL * error_vel) + (GAIN_INTEGRAL * integral_vel_error) + (GAIN_DIFFERENTIAL * (error_vel - error_vel_pre) / encoder_deltatime);
 
             error_vel_pre = error_vel;
+
+            if (ANGLE_CORRECTION)
+            {
+                cmd.angular.z = atan(TARGET_POSITION_Y / TARGET_POSITION_X) - odom.pose.pose.orientation.z;
+            }
 
         }
     }
