@@ -15,8 +15,21 @@ RobotControlClass::RobotControlClass()
 		sub_encoder=nhSub.subscribe("/rover_odo",1,&RobotControlClass::encoder_callback,this);
 		pub_cmd= nhPub.advertise<geometry_msgs::Twist>("/rover_twist", 1);
 	}
-
-	//pub_odom= nhPub.advertise<geometry_msgs::Twist>("/autonomous_mobile_robot_2022/odom", 1);
+	
+	target_angle = atan(TARGET_POSITION_Y/(TARGET_POSITION_X + 10e-100));
+	if (TARGET_POSITION_X < 0) 
+	{
+		MAX_VELOCITY = -MAX_VELOCITY;
+		if (TARGET_POSITION_Y > 0)
+		{
+			target_angle += M_PI/2;
+		}
+		else if (TARGET_POSITION_Y < 0)
+		{
+			target_angle -= M_PI/2;
+		}
+	}
+	pub_odom= nhPub.advertise<geometry_msgs::Twist>("/autonomous_mobile_robot_2022/odom", 1);
 	
 }
 RobotControlClass::~RobotControlClass(){

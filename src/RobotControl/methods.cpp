@@ -41,14 +41,13 @@ void RobotControlClass::odometry()
         odom.pose.pose.position.y += encoder_value.linear.x * sin(odom.pose.pose.orientation.z) * encoder_deltatime;
 
         std::cout<< encoder_value <<std::endl;
-		std::cout<< odom.pose.pose.position <<std::endl;
-        std::cout<< odom.pose.pose.orientation <<std::endl;
+		std::cout<< odom.pose.pose<<std::endl;
 
 		encoder_time_pre = encoder_time_now;
     }
 
     //std::cout<< atan(TARGET_POSITION_Y / TARGET_POSITION_X) <<std::endl;
-    if (!done_turn && abs(odom.pose.pose.orientation.z) >= atan(TARGET_POSITION_Y / TARGET_POSITION_X)) done_turn = true;
+    if (!done_turn && abs(odom.pose.pose.orientation.z) >= target_angle) done_turn = true;
     if (!done_straight && sqrt(odom.pose.pose.position.x * odom.pose.pose.position.x + odom.pose.pose.position.y * odom.pose.pose.position.y) > sqrt(TARGET_POSITION_X * TARGET_POSITION_X + TARGET_POSITION_Y * TARGET_POSITION_Y)) done_straight = true;
     
 }
@@ -68,7 +67,7 @@ void RobotControlClass::pid_control()
             double error_angular = MAX_ANGULAR - encoder_value.angular.z;
             integral_angular_error += error_angular * encoder_deltatime;  //台形近似にするかも
 
-            cmd.angular.z = (GAIN_PROPORTIONAL * error_angular) + (GAIN_INTEGRAL * integral_angular_error) + (0.00001 * (error_angular - error_angular_pre) / encoder_deltatime);
+            cmd.angular.z = (GAIN_PROPORTIONAL * error_angular) + (GAIN_INTEGRAL * integral_angular_error) + (GAIN_DIFFERENTIAL * (error_angular - error_angular_pre) / encoder_deltatime);
 
             error_angular_pre = error_angular;
             return;
@@ -86,7 +85,7 @@ void RobotControlClass::pid_control()
 
             if (ANGLE_CORRECTION)
             {
-                cmd.angular.z = atan(TARGET_POSITION_Y / TARGET_POSITION_X) - odom.pose.pose.orientation.z;
+                cmd.angular.z = target_angle - odom.pose.pose.orientation.z;
             }
 
         }
@@ -98,4 +97,8 @@ void RobotControlClass::pid_control()
 void RobotControlClass::publishcmd()
 {
     if (PUBLISH_COMMAND) pub_cmd.publish(cmd);
+}
+void RobotControlClass::publishodom()
+{
+    pub_odom.publish(odom);
 }

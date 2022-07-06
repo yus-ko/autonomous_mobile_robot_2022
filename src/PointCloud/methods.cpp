@@ -7,6 +7,11 @@ void PointCloudClass::pcl_callback(const sensor_msgs::PointCloud2ConstPtr& msg)
     manage();
 }
 
+void PointCloudClass::odom_callback(const nav_msgs::Odometry& msg)
+{
+    odom = msg;
+}
+
 // void PointCloudClass::encoder_callback(const beego_control::beego_encoder& msg)
 // {
 // 	if (!encoder_firsttime){
@@ -71,56 +76,20 @@ void PointCloudClass::manage(){
     clearMessages();
 }
 
-void PointCloudClass::Extract(){
-
-    // int cnt=0;
-    // float X,Y,Z;
-    // for(int i = 0 ; i < 360960; i++){
-
-    //     //奥行
-    //     *((unsigned char*)(&X) + 3) = rawPC2.data[i * 32 + 0];
-    //     *((unsigned char*)(&X) + 2) = rawPC2.data[i * 32 + 1];
-    //     *((unsigned char*)(&X) + 1) = rawPC2.data[i * 32 + 2];
-    //     *((unsigned char*)(&X) + 0) = rawPC2.data[i * 32 + 3];
-        
-    //     //横
-    //     *((unsigned char*)(&Y) + 3) = rawPC2.data[i * 32 + 4];
-    //     *((unsigned char*)(&Y) + 2) = rawPC2.data[i * 32 + 5];
-    //     *((unsigned char*)(&Y) + 1) = rawPC2.data[i * 32 + 6];
-    //     *((unsigned char*)(&Y) + 0) = rawPC2.data[i * 32 + 7];
-
-    //     //高さ
-    //     *((unsigned char*)(&Z) + 3) = rawPC2.data[i * 32 + 8];
-    //     *((unsigned char*)(&Z) + 2) = rawPC2.data[i * 32 + 9];
-    //     *((unsigned char*)(&Z) + 1) = rawPC2.data[i * 32 + 10];
-    //     *((unsigned char*)(&Z) + 0) = rawPC2.data[i * 32 + 11];
-
-    //     if(!(X == 0 && Y == 0 && Z == 0)){
-    //         if(X >= -0.5 && X <= 0.5 && 
-    //             Y >= 0.5 && Y <= 1.5 && 
-    //             Z >= -0.7 && Z <= 0.0
-    //             ){
-    //             for(int j = 0; j < 12; j++){
-    //                 PC2.data[cnt * 32 + j] = rawPC2.data[i * 32 + j];
-    //             }
-    //             cnt++;
-            
-    //             std::cout<< "X = " << X <<std::endl;
-    //             std::cout<< "Y = " << Y <<std::endl;
-    //             std::cout<< "Z = " << Z <<std::endl;
-    //         }
-    //     }
-    // }
-    // PC2.data.resize(cnt * 32);
-
-    //pcl::PointCloud<pcl::PointXYZ>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZ>);
-    //pcl::fromROSMsg (rawPC2, cloud);
+void PointCloudClass::Extract()
+{
 
     int cnt=0;
     float X,Y,Z;
     float OCx = DISTANCE_TO_OBJECT * sin(abs(ANGLE_TO_OBJECT)/180.0*M_PI);
     if(ANGLE_TO_OBJECT < 0.0) OCx = -OCx;
     float OCy = DISTANCE_TO_OBJECT * cos(abs(ANGLE_TO_OBJECT)/180.0*M_PI);
+
+    if(IS_MOVING)
+    {
+        OCy -= odom.pose.pose.position.x;
+    }
+
     float OCz = -CAMERAPOS_HEIGHT + OBJECTSIZE_HEIGHT / 2;
 
     float minX = OCx - OBJECTSIZE_WIDTH / 2.0 - 0.2;
@@ -129,27 +98,23 @@ void PointCloudClass::Extract(){
     float minY = OCy - OBJECTSIZE_DEPTH / 2.0 - 0.2;
     float maxY = OCy + OBJECTSIZE_DEPTH / 2.0 + 0.2;
 
-    if(ROBOT_VELOCITY != 0.0){
-        minY = 0.0;
-        maxY = 5.0 - distance_traveled_robot;
-    }
-
     float minZ = OCz - OBJECTSIZE_HEIGHT / 2.0 - 0.2;
     float maxZ = OCz + OBJECTSIZE_HEIGHT / 2.0 + 0.2;
 
     int datanum = rawcloud.height * rawcloud.width;
     cloud.data.resize(datanum);
-    for(int i = 0 ; i < datanum; i++){
+    for(int i = 0 ; i < datanum; i++)
+    {
 
         X = rawcloud.points[i].y;   //横幅
         Y = rawcloud.points[i].x;   //奥行
         Z = rawcloud.points[i].z;   //高さ
 
-        if(!(X == 0.0 && Y == 0.0 && Z == 0.0)){
-            if(X >= minX && X <= maxX && 
-                Y >= minY && Y <= maxY && 
-                Z >= minZ && Z <= maxZ
-                ){
+        if(!(X == 0.0 && Y == 0.0 && Z == 0.0))
+        {
+
+            if((X >= minX && X <= maxX) && (Y >= minY && Y <= maxY) && (Z >= minZ && Z <= maxZ))
+            {
                 cloud.data[cnt].x = X;
                 cloud.data[cnt].y = Y;
                 cloud.data[cnt].z = Z;
@@ -157,6 +122,7 @@ void PointCloudClass::Extract(){
                 cnt++;
             
             }
+            
         }
     }
     cloud.data.resize(cnt);

@@ -3,9 +3,9 @@
 void PointCloudClass::setLaunchParam(){
     
     ros::NodeHandle n("~");
+    n.getParam("IS_MOVING",IS_MOVING);
     n.getParam("DISTANCE_TO_OBJECT",DISTANCE_TO_OBJECT);
     n.getParam("ANGLE_TO_OBJECT",ANGLE_TO_OBJECT);
-    n.getParam("ROBOT_VELOCITY",ROBOT_VELOCITY);
     n.getParam("OBJECTSIZE_HEIGHT",OBJECTSIZE_HEIGHT);
     n.getParam("OBJECTSIZE_WIDTH",OBJECTSIZE_WIDTH);
     n.getParam("OBJECTSIZE_DEPTH",OBJECTSIZE_DEPTH);

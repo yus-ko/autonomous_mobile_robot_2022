@@ -12,7 +12,7 @@ class RobotControlClass{
 		ros::Subscriber sub_encoder;
         //送信データ
 		ros::NodeHandle nhPub;
-        ros::Publisher pub_cmd;
+        ros::Publisher pub_cmd, pub_odom;
 
         ros::Time encoder_time_pre;
         geometry_msgs::Twist encoder_value, cmd;
@@ -21,7 +21,8 @@ class RobotControlClass{
 
         bool done_turn = false, done_straight = false;
 
-        double encoder_deltatime, error_pos_x_pre = 0, error_pos_y_pre = 0, error_vel_pre = 0, error_angular_pre = 0, integral_vel_error = 0, integral_angular_error = 0;
+        double error_pos_x_pre = 0.0, error_pos_y_pre = 0.0, error_vel_pre = 0.0, error_angular_pre = 0.0, integral_vel_error = 0.0, integral_angular_error = 0.0;
+        double encoder_deltatime, target_angle;
 
 
         bool IS_SIMULATOR, PUBLISH_COMMAND, ANGLE_CORRECTION, PID_CONTROL;
@@ -50,6 +51,7 @@ class RobotControlClass{
 
         //センサデータ送信
         void publishcmd();//データ送信
+        void publishodom();//データ送信
         //データクリア
         //void clearMessages();
 };

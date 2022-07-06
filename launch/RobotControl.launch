@@ -6,7 +6,7 @@
   <param name="ANGLE_CORRECTION" value="true"/>
   <param name="MAX_VELOCITY" value="0.5"/>
   <param name="MAX_ANGULAR" value="3.141592653589793"/>
-  <param name="TARGET_POSITION_X" value="1.0"/>
+  <param name="TARGET_POSITION_X" value="-1.0"/>
   <param name="TARGET_POSITION_Y" value="0.0"/>
   <param name="GAIN_PROPORTIONAL" value="1.0"/>
   <param name="GAIN_INTEGRAL" value="0.5"/>
