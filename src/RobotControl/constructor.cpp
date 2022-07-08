@@ -29,7 +29,7 @@ RobotControlClass::RobotControlClass()
 			target_angle -= M_PI/2;
 		}
 	}
-	pub_odom= nhPub.advertise<geometry_msgs::Twist>("/autonomous_mobile_robot_2022/odom", 1);
+	pub_odom= nhPub.advertise<nav_msgs::Odometry>("/autonomous_mobile_robot_2022/odom", 1);
 	
 }
 RobotControlClass::~RobotControlClass(){

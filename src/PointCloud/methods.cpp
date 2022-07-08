@@ -88,6 +88,7 @@ void PointCloudClass::Extract()
     if(IS_MOVING)
     {
         OCy -= odom.pose.pose.position.x;
+        std::cout<< odom.pose.pose.position <<std::endl;
     }
 
     float OCz = -CAMERAPOS_HEIGHT + OBJECTSIZE_HEIGHT / 2;
@@ -125,6 +126,7 @@ void PointCloudClass::Extract()
             
         }
     }
+    std::cout<<"cnt:"<< cnt <<std::endl;
     cloud.data.resize(cnt);
 
 }

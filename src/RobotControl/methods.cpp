@@ -18,6 +18,7 @@ void RobotControlClass::manage()
     odometry();
     pid_control();
     publishcmd();
+    publishodom();
 }
 
 void RobotControlClass::odometry()
